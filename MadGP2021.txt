@@ -1,0 +1,1057 @@
+import React, { Component } from 'react';
+import { AppRegistry, Text, View, StyleSheet, Dimensions, TextInput, TouchableHighlight, ScrollView } from 'react-native';
+import Constants from 'expo-constants';
+
+let deviceHeight = Dimensions.get('window').height;
+let deviceWidth = Dimensions.get('window').width;
+// Jack Pec, Zaid Ahmed, Misho, Daniel Ko
+export default class App extends Component {
+
+//////RENDER////////
+
+    render() {
+        return (
+            <View style={styles.container}>
+              
+                <View style={{ display: this.state.startPage }}>
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.titleText}>
+                            Unknown Trivia
+                        </Text>
+                    </View>
+                    
+                    {/*Asking user(s) to give their player names*/}
+                    <View style={styles.descContainer}>
+                        <Text style={styles.descText2}>
+                            Welcome to our mobile Jeopardy game! {'\n'}{'\n'}
+                            This is played like regular Jepoardy. {'\n'}{'\n'}
+                            Pick a certain price/difficulty of question, {'\n'}
+                            If you answer right, you get the money, {'\n'}
+                            If you answer wrong, you don't get the money. {"\n"}
+                            To win, you must get $2000 before your opponent. {'\n'}{'\n'}
+                            Good Luck! {'\n'}{'\n'}
+                            Enter Player Names:
+                        </Text>
+                    </View>
+                    <View style={styles.inputContainer}>
+                        <View style={styles.inputRow}>
+                            <TextInput
+                                clearTextOnFocus={true}
+                                value={this.state.player1}
+                                style={styles.inputStyle}
+                                onChangeText={(player1) => this.setState({player1})}
+                            />
+                            <TextInput
+                                clearTextOnFocus={true}
+                                value={this.state.player2}
+                                style={styles.inputStyle}
+                                onChangeText={(player2) => this.setState({player2})}
+                            />
+                        </View>
+                        <TouchableHighlight
+                            onPress = {this.handleMainPress}
+                            underlayColor='none'
+                        >
+                            <View style={styles.startButton}>
+                                <Text style={styles.startButtonText}>
+                                    Start
+                                </Text>
+                            </View>
+                        </TouchableHighlight>
+                    </View>
+                </View>
+                
+              	<View style={{ display: this.state.mainPage }}>
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.titleText}>
+                            Unknown Trivia
+                        </Text>
+                    </View>
+                    <View style={styles.scoreContainer}>
+                        <View style={styles.individualScoreContainer}>
+                            <Text style={styles.descText}>
+                                {this.state.player1}
+                            </Text>
+                            <Text style={styles.scoreText}>
+                                {this.state.player1Score}
+                            </Text>
+                        </View>
+                        <View style={styles.individualScoreContainer}>
+                            <Text style={styles.descText}>
+                                {this.state.player2}
+                            </Text>
+                            <Text style={styles.scoreText}>
+                                {this.state.player2Score}
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={styles.pricePointContainer}>
+                        <View style={styles.buttonRowContainer}>
+                            <TouchableHighlight
+                                onPress={() => this.displayQuestionandUpdate(400)}
+                                underlayColor='none'
+                            >   
+                                <View style={styles.priceButton}>
+                                    <Text style={styles.buttonText}>
+                                        $400
+                                    </Text>
+                                </View>
+                            </TouchableHighlight>
+                            <TouchableHighlight
+                                  onPress={() => this.displayQuestionandUpdate(300)}
+                                  underlayColor='none'
+                            >   
+                                <View style={styles.priceButton}>
+                                    <Text style={styles.buttonText}>
+                                        $300
+                                    </Text>
+                                </View>
+                            </TouchableHighlight>
+                        </View>
+                        <View style={styles.buttonRowContainer}>
+                            <TouchableHighlight
+                               onPress={() => this.displayQuestionandUpdate(200)}
+                               underlayColor='none'
+                            >   
+                                <View style={styles.priceButton}>
+                                    <Text style={styles.buttonText}>
+                                        $200
+                                    </Text>
+                                </View>
+                            </TouchableHighlight>
+                            <TouchableHighlight
+                                 onPress={() => this.displayQuestionandUpdate(100)}
+                                 underlayColor='none'
+                            >   
+                                <View style={styles.priceButton}>
+                                    <Text style={styles.buttonText}>
+                                        $100
+                                    </Text>
+                                </View>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
+                    <View style={styles.buttonRowContainer}>
+                        <TouchableHighlight
+                             onPress={() => this.handleShopPress()}
+                             underlayColor='none'
+                        >
+                            <View style={styles.priceButton}>
+                                <Text style={styles.buttonText}>
+                                    Shop
+                                </Text>
+                            </View>
+                        </TouchableHighlight>
+                        <TouchableHighlight
+                            onPress= {this.handleCustomPress}
+                            style={styles.priceButton}
+                            underlayColor='none'
+                        >
+                            <Text style={styles.buttonText}>
+                                Add Questions
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
+              
+              
+              
+              	<View style={{ display: this.state.questionPage }}>
+              	    <View style={styles.titleContainer}>
+                        <Text style={styles.titleText}>
+                            Unknown Trivia
+                        </Text>
+                    </View>
+              	    <View style={styles.questionContainer}>
+                        <Text style={styles.question}>
+                            {this.state.displayQuestion}
+                        </Text>
+                        <Text style={styles.answer}>
+                            {this.state.opA}
+                        </Text>
+                        
+                        <Text style={styles.answer}>
+                            {this.state.opB}
+                        </Text>
+                
+                        <Text style={styles.answer}>
+                            {this.state.opC}
+                        </Text>
+                               
+                        <Text style={styles.answer}>
+                            {this.state.opD}
+                        </Text>
+                               
+                        <View style={styles.answerButtonContainer}>
+                            <View style={styles.buttonRowContainer}>
+                                <TouchableHighlight
+                                    onPress={() => this.getAns("a")}
+                                    style={styles.answerButton}
+                                    underlayColor='none'
+                                >
+                                    <Text style={styles.buttonText}>
+                                        A
+                                    </Text>
+                                </TouchableHighlight>
+                                
+                                <TouchableHighlight
+                                    onPress={() => this.getAns("b")}
+                                    style={styles.answerButton}
+                                    underlayColor='none'
+                                >
+                                    <Text style={styles.buttonText}>
+                                        B
+                                    </Text>
+                                </TouchableHighlight>
+                            </View>
+                            <View style={styles.buttonRowContainer}>
+                                <TouchableHighlight
+                                    onPress={() => this.getAns("c")}
+                                    style={styles.answerButton}
+                                    underlayColor='none'
+                                >
+                                    <Text style={styles.buttonText}>
+                                        C
+                                    </Text>
+                                </TouchableHighlight>
+
+                                <TouchableHighlight
+                                    onPress={() => this.getAns("d")}
+                                    style={styles.answerButton}
+                                    underlayColor='none'
+                                >
+                                    <Text style={styles.buttonText}>
+                                        D
+                                    </Text>
+                                </TouchableHighlight>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+                
+                <View style={{ display: this.state.continuePage }}>
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.titleText}>
+                            Unknown Trivia
+                        </Text>
+                    </View>
+                    
+                    <View style={styles.descContainer}>
+                        <Text style={styles.descText}>
+                            {this.state.continueMessage}
+                        </Text>
+                    </View>
+                    
+                    <View style={styles.continueContainer}>
+                        <TouchableHighlight
+                            onPress = {this.handleMainPress}
+                            style={styles.priceButton}
+                            underlayColor='none'
+                        >
+                            <Text style={styles.answer}>
+                                Continue
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
+                
+                <View style={{ display: this.state.winnerPage }}>
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.titleText}>
+                            WINNER!
+                        </Text>
+                    </View>
+                    
+                    <View style={styles.descContainer}>
+                        <Text style={styles.descText}>
+                            {this.state.winnerMessage}
+                        </Text>
+                    </View>
+                    
+                    <View style={styles.continueContainer}>
+                        <TouchableHighlight
+                            onPress = {this.startNewGame}
+                            style={styles.priceButton}
+                            underlayColor='none'
+                        >
+                            <Text style={styles.answer}>
+                                Play Again
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
+
+                <View style={{ display: this.state.shopPage }}>
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.titleText}>
+                            SHOP
+                        </Text>
+                    </View>
+                    
+                    <View style={styles.scoreContainer}>
+                        <Text style={styles.descText}>
+                            {this.state.shopMessage}
+                        </Text>
+                    </View>
+                    
+                    <View style={styles.shopButtonContainer}>
+                        <View style={styles.buttonRowContainer}>
+                            <TouchableHighlight
+                                onPress={() => this.upgradeBoost(400)}
+                                style={styles.priceButton}
+                                underlayColor='none'
+                            >
+                                <Text style={styles.buttonText}>
+                                    Boost ($400)
+                                </Text>
+                            </TouchableHighlight>
+                            
+                            <TouchableHighlight
+                                onPress={() => this.upgradeSab(400)}
+                                style={styles.priceButton}
+                                underlayColor='none'
+                            >
+                                <Text style={styles.buttonText}>
+                                    Sab ($400)
+                                </Text>
+                            </TouchableHighlight>
+                        </View>
+                        <View style={styles.buttonRowContainer}>
+                            <TouchableHighlight
+                                onPress={() => this.upgradeBoost(300)}
+                                style={styles.priceButton}
+                                underlayColor='none'
+                            >
+                                <Text style={styles.buttonText}>
+                                    Boost ($300)
+                                </Text>
+                            </TouchableHighlight>
+
+                            <TouchableHighlight
+                                onPress={() => this.upgradeSab(300)}
+                                style={styles.priceButton}
+                                underlayColor='none'
+                            >
+                                <Text style={styles.buttonText}>
+                                    Sab ($300)
+                                </Text>
+                            </TouchableHighlight>
+                        </View>
+                        <View style={styles.buttonRowContainer}>
+                            <TouchableHighlight
+                                onPress={() => this.upgradeBoost(200)}
+                                style={styles.priceButton}
+                                underlayColor='none'
+                            >
+                                <Text style={styles.buttonText}>
+                                    Boost ($200)
+                                </Text>
+                            </TouchableHighlight>
+
+                            <TouchableHighlight
+                                onPress={() => this.upgradeSab(200)}
+                                style={styles.priceButton}
+                                underlayColor='none'
+                            >
+                                <Text style={styles.buttonText}>
+                                    Sab ($200)
+                                </Text>
+                            </TouchableHighlight>
+                        </View>
+                        <View style={styles.buttonRowContainer}>
+                            <TouchableHighlight
+                                onPress= {this.handleMainPress}
+                                style={styles.priceButton}
+                                underlayColor='none'
+                            >
+                                <Text style={styles.buttonText}>
+                                    BACK
+                                </Text>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
+                </View>
+                
+                <View style={{ display: this.state.customPage }}>
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.titleText}>
+                            Custom
+                        </Text>
+                    </View>
+                    <View style={styles.scoreContainer2}>
+                        <Text style={styles.descText}>
+                            Add your own Questions
+                        </Text>
+                    </View>
+                    
+                    <View style={styles.customQuestionContainer}>
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                clearTextOnFocus={true}
+                                value= {this.state.displayQuestion}
+                                style={styles.questionTextInput}
+                                onChangeText={(displayQuestion) => this.setState({displayQuestion})}
+                            />
+                            <TextInput
+                                clearTextOnFocus={true}
+                                value= {this.state.questionPrice}
+                                style={styles.questionTextInput}
+                                onChangeText={(questionPrice) => this.setState({questionPrice})}
+                            />
+                            <TextInput
+                                clearTextOnFocus={true}
+                                value= {this.state.opA}
+                                style={styles.questionTextInput}
+                                onChangeText={(opA) => this.setState({opA})}
+                            />
+                            <TextInput
+                                clearTextOnFocus={true}
+                                value= {this.state.opB}
+                                style={styles.questionTextInput}
+                                onChangeText={(opB) => this.setState({opB})}
+                            />
+                            <TextInput
+                                clearTextOnFocus={true}
+                                value= {this.state.opC}
+                                style={styles.questionTextInput}
+                                onChangeText={(opC) => this.setState({opC})}
+                            />
+                            <TextInput
+                                clearTextOnFocus={true}
+                                value= {this.state.opD}
+                                style={styles.questionTextInput}
+                                onChangeText={(opD) => this.setState({opD})}
+                            />
+                            <TextInput
+                                clearTextOnFocus={true}
+                                value= {this.state.answer}
+                                style={styles.questionTextInput}
+                                onChangeText={(answer) => this.setState({answer})}
+                            />
+                        </View>
+                        
+                        <View style={styles.buttonRowContainer}>
+                            <TouchableHighlight
+                                onPress={() => this.addquestion()}
+                                style={styles.priceButton}
+                                underlayColor='none'
+                            >
+                                <Text style={styles.answer}>
+                                    Add
+                                </Text>
+                            </TouchableHighlight>
+                            <TouchableHighlight
+                                onPress={() => this.handleMainPress()}
+                                style={styles.priceButton}
+                                underlayColor='none'
+                            >
+                                <Text style={styles.answer}>
+                                    Back
+                                </Text>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
+                </View>
+            </View>
+        );
+    }
+/////Code////
+displayQuestionandUpdate = (price) => {
+    var rightpriceArray = [];
+  //  let oldQuestArray = [...this.state.QuestionArray];
+        
+         for(let i=0; i<this.state.questionArray.length; i++){
+           if(this.state.questionArray[i].price == price){
+              rightpriceArray.push(this.state.questionArray[i]);
+           }
+        }
+     var randomNumber = Math.floor(Math.random() * (rightpriceArray.length-1)) + 0;
+    //  var randomNumber = 0;
+
+    this.state.displayQuestion = rightpriceArray[randomNumber].questionText;
+    this.state.opA = rightpriceArray[randomNumber].a;
+  	this.state.opB = rightpriceArray[randomNumber].b;
+  	this.state.opC= rightpriceArray[randomNumber].c;
+    this.state.opD = rightpriceArray[randomNumber].d;
+    this.state.answer = rightpriceArray[randomNumber].answer;
+    this.state.questionPrice = Number(rightpriceArray[randomNumber].price);
+    this.handleQuestionPress();
+    
+};
+                                                         
+changePlayer = () =>{
+    if(this.state.isPlayer1true == true){
+        this.state.isPlayer1true = false;
+        this.setState({playerTurn: this.state.player2});
+    }
+    else if(this.state.isPlayer1true == false){
+        this.state.isPlayer1true = true;
+        this.setState({playerTurn: this.state.player1});
+    }
+};
+checkWinner = () =>{
+    if(this.state.player1Score >= 2000) {
+        this.state.winnerMessage = 'Congrats ' + this.state.player1 + ", you are the winner!" ;
+        this.handleWinnerPress();
+    }
+    if(this.state.player2Score >= 2000) {
+        this.state.winnerMessage = 'Congrats ' + this.state.player2 + ", you are the winner!" ;
+        this.handleWinnerPress();
+    }
+};
+	startNewGame = () =>{
+        this.handleStartPress();
+        this.state.continueMessage = "";
+        this.state.winnerMessage = "";
+        this.state.displayQuestion= "";
+        this.state.answer= "";
+        this.state.opA= "";
+        this.state.opB= "";
+        this.state.opC= "";
+        this.state.opD= "";
+        this.state.player1Score = 0;
+        this.state.player2Score = 0;
+        this.state.isPlayer1true = true;
+        this.state.questionPrice = 0;
+    };
+
+addquestion = () =>{
+    var newObj = {
+        questionText: this.state.displayQuestion,
+        a: this.state.opA,
+        b: this.state.opB,
+        c: this.state.opC,
+        d: this.state.opD,
+        answer: this.state.answer,
+        price: this.state.questionPrice,
+    }
+    this.state.questionArray.push(newObj);
+    this.handleMainPress();
+};
+                            
+upgradeBoost = (cost) =>{
+     if(this.state.isPlayer1true == true){
+         if(this.state.player1Score>=cost){
+          this.state.player1Score = this.state.player1Score - Number(cost);
+          this.state.costmulti1 =  2+(cost/100);
+          this.setState({ shopMessage: "Thank you for your purchase " + this.state.playerTurn + "!"});
+        }
+        else {
+            this.setState({ shopMessage: "Sorry " + this.state.playerTurn + ", you don't have enough money \n to afford that." });
+        }
+     }
+    else if(this.state.isPlayer1true == false){
+        if(this.state.player2Score>=cost){
+         this.state.player2Score = this.state.player2Score - Number(cost);
+         this.state.costmulti2 =  2+(cost/100);
+         this.setState({ shopMessage: "Thank you for your purchase " + this.state.playerTurn + "!"});
+        }
+        else {
+            this.setState({ shopMessage: "Sorry " + this.state.playerTurn + ", you don't have enough money \n to afford that." });
+        }
+    }
+    
+};
+
+upgradeSab = (cost) =>{
+       if(this.state.isPlayer1true == true){
+         if(this.state.player1Score>=cost){
+          this.state.player1Score = this.state.player1Score - Number(cost);
+          this.state.costmulti2 =  0.5*(100/cost);
+          this.setState({ shopMessage: "Thank you for your purchase " + this.state.playerTurn + "!" });
+        }
+        else {
+            this.setState({ shopMessage: "Sorry " + this.state.playerTurn + ", you don't have enough money \n to afford that." });
+        }
+     }
+    else if(this.state.isPlayer1true == false){
+        if(this.state.player2Score>=cost){
+         this.state.player2Score = this.state.player2Score - Number(cost);
+         this.state.costmulti1 =  0.5*(100/cost);
+         this.setState({ shopMessage: "Thank you for your purchase " + this.state.playerTurn + "!"});
+        }
+        else {
+            this.setState({ shopMessage: "Sorry " + this.state.playerTurn + ", you don't have enough money \n to afford that." });
+        }
+    }
+    
+};
+
+
+getAns = (answer) => {
+    if(answer==this.state.answer){
+        
+        if(this.state.isPlayer1true == true){
+          this.state.continueMessage = 'That is Correct!, ' + this.state.player1 + " Now it is " +  this.state.player2 + "'s turn." ;
+          this.state.player1Score = this.state.player1Score + Number(this.state.questionPrice*this.state.costmulti1);
+        }
+        else if(this.state.isPlayer1true == false){
+        this.state.continueMessage = 'That is Correct!, ' + this.state.player2 + " Now it is " +  this.state.player1 + "'s turn." ;
+         this.state.player2Score = this.state.player2Score + Number(this.state.questionPrice*this.state.costmulti2);
+        }
+        
+    }
+    else{
+        this.state.continueMessage = "Sorry that was incorrect!, it is the other player's turn now";
+    }
+    this.handleContinuePress();
+    this.checkWinner();
+    this.changePlayer();
+    this.resetQuestion();
+};
+    resetQuestion = () => this.setState(state => ({
+        displayQuestion: "Question",
+        answer: "Correct Answer",
+        opA: "Answer a",
+        opB: "Answer b",
+        opC: "Answer c",
+        opD: "Answer d",
+    }));
+
+updateName = (index, newName) => {
+	   	let newPlayerArray = [...this.state.playerArray];
+	   	newPlayerArray[index] = {...newPlayerArray[index], teamName: newName}
+	   	this.setState({playerArray: newPlayerArray});
+};
+    handleStartPress = () => this.setState(state => ({
+        startPage: 'block',
+        mainPage: 'none',
+        questionPage: 'none',
+        continuePage: 'none',
+        winnerPage: 'none',
+        shopPage: 'none',
+        customPage:'none',
+    }));
+    handleMainPress = () => this.setState(state => ({
+        startPage: 'none',
+        mainPage: 'block',
+        questionPage: 'none',
+        continuePage: 'none',
+        winnerPage: 'none',
+        shopPage: 'none',
+        customPage:'none',
+    }));
+    handleQuestionPress = () => this.setState(state => ({
+        startPage: 'none',
+        mainPage: 'none',
+        questionPage: 'block',
+        continuePage: 'none',
+        winnerPage: 'none',
+        shopPage: 'none',
+        customPage:'none',
+    }));
+    handleContinuePress = () => this.setState(state => ({
+        startPage: 'none',
+        mainPage: 'none',
+        questionPage: 'none',
+        continuePage: 'block',
+        winnerPage: 'none',
+        shopPage: 'none',
+        customPage:'none',
+    }));
+    handleWinnerPress = () => this.setState(state => ({
+        startPage: 'none',
+        mainPage: 'none',
+        questionPage: 'none',
+        continuePage: 'none',
+        winnerPage: 'block',
+        shopPage: 'none',
+        customPage:'none',
+    }));
+    handleShopPress = () => this.setState(state => ({
+        startPage: 'none',
+        mainPage: 'none',
+        questionPage: 'none',
+        continuePage: 'none',
+        winnerPage: 'none',
+        shopPage: 'block',
+        customPage:'none',
+        shopMessage: this.state.playerTurn + ", you can buy \n Upgrades and Traps",
+    }));
+    handleCustomPress = () => this.setState(state => ({
+        startPage: 'none',
+        mainPage: 'none',
+        questionPage: 'none',
+        continuePage: 'none',
+        winnerPage: 'none',
+        shopPage: 'none',
+        customPage:'block',
+    }));
+	  state = {
+	    startPage: 'block',
+        mainPage: 'none',
+        questionPage: 'none',
+        continuePage: 'none',
+        winnerPage: 'none',
+        shopPage: 'none',
+        customPage:'none',
+        
+        continueMessage: '',
+        winnerMessage: '',
+        shopMessage: '',
+       
+        displayQuestion: "Question",
+        answer: "Correct Answer Lowercase Letter",
+        opA: "Answer a",
+        opB: "Answer b",
+        opC: "Answer c",
+        opD: "Answer d",
+        questionPrice: 0,
+        costmulti1: 1,
+        costmulti2: 1,
+        
+        player1: 'Player 1',
+        player2: 'Player 2',
+        player1Score: 0,
+        player2Score: 0,
+        isPlayer1true: true,
+        playerTurn: 'Player 1',
+       
+		questionArray:[
+         {
+         questionText: "Who assassinated John F Kennedy?",
+				 a: "a. Fidel Castro",
+				 b: "b. Lee Harvey Oswald",
+				 c: "c. John Wilkes Booth",
+		  	 d: "d. Charles J. Guiteau",
+				 price: 100,
+				 answer:"b",
+         },
+         {
+         questionText: "Which of the following president's administration was most focused on human rights?",
+	       a: "a. Reagan",
+		     b: "b. LBJ",
+		     c: "c. Carter",
+		     d: "d. Nixon",
+		     price: 300,
+		     answer:"c",
+         },
+         {
+         questionText: "What was the first ever video game?",
+	    	 a: "a. Pong",
+				 b: "b. Space Travel",
+				 c: "c. Spacewar!",
+				 d: "d. Pac-Man",
+				 price: 100,
+				 answer:"a",
+         },
+         {
+         questionText: "What did Nintendo sell at the start of the company?",
+	    	 a: "a. Video games",
+				 b: "b. Board games",
+				 c: "c. Playing cards",
+				 d: "d. Japanese food",
+				 price: 200,
+				 answer:"c",
+         },
+         {
+         questionText: "What is the only video game franchise originating in the 1970s which has so far generated over $1B in revenue?",
+	    	 a: "a. Super Smash Bros",
+				 b: "b. Pac Man",
+				 c: "c. Super Mario Bros",
+				 d: "d. Space Invaders",
+				 price: 300,
+				 answer:"d",
+         },
+         {
+        questionText: "In which video game did Mario first appear?",
+	    	 a: "a. Super Mario Bros",
+				 b: "b. Donkey Kong",
+				 c: "c. Super Smash Bros",
+				 d: "d. Super Mario World",
+				 price: 400,
+				 answer:"b",
+         },
+         {
+         questionText: "Syntax, logic & runtime are the 3 basic types of programming boos-boos called what?",
+	    	 a: "a. Boos-boos",
+				 b: "b. Errors",
+				 c: "c. Oofers",
+				 d: "d. Var crash",
+				 price: 100,
+				 answer:"b",
+         },
+         {
+         questionText: "What programing language did the game Minecraft first use?",
+	    	 a: "a. Java",
+				 b: "b. C++",
+				 c: "c. Python",
+				 d: "d. basic",
+				 price: 200,
+				 answer:"a",
+         },
+         {
+         questionText: "The generic term for the mechanical, electircal, and electronic components of a computer are called what?",
+	    	 a: "a. Software",
+				 b: "b. Ram",
+				 c: "c. Circuit board",
+				 d: "d. Hardware",
+				 price: 300,
+				 answer:"d",
+         },
+         {
+         questionText: "The translation of data into secret code",
+	    	 a: "a. cubit",
+				 b: "b. hashing",
+				 c: "c. firewall",
+				 d: "d. encryption",
+				 price: 400,
+				 answer:"d",
+         },
+         {
+         questionText: "When was the game Half-Life released?",
+	    	 a: "a. 1995",
+				 b: "b. 1996",
+				 c: "c. 1997",
+				 d: "d. 1998",
+				 price: 100,
+				 answer:"d",
+         },
+         {
+         questionText: "How many countries are there in the world?",
+	    	 a: "a. 165",
+				 b: "b. 120",
+				 c: "c. 195",
+				 d: "d. 200",
+				 price: 200,
+				 answer:"c",
+         },
+         {
+         questionText: "When did Germany surrender in WW2?",
+	    	 a: "a. May 7, 1945",
+				 b: "b. April 9, 1945",
+				 c: "c. March 3, 1945",
+				 d: "d. June 2, 1944",
+				 price: 300,
+				 answer:"a",
+         },
+         {
+         questionText: "How many bones are in the human body?",
+	    	 a: "a. 200",
+				 b: "b. 206",
+				 c: "c. 197",
+				 d: "d. 178",
+				 price: 400,
+				 answer:"b",
+         },
+      ],
+    }
+}
+
+
+//////STYLES/////
+
+const styles = StyleSheet.create({
+    container: {
+        height: deviceHeight,
+        width: deviceWidth,
+        backgroundColor: '#4d4cff',
+    },
+    startButton: {
+        height: deviceHeight/12,
+        width: deviceWidth/3,
+        backgroundColor: 'blue',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: deviceWidth/100,
+        borderColor: '#151880',
+        borderRadius: deviceWidth/100,
+    },
+    startButtonText: {
+        fontFamily: 'Helvetica',
+        color: '#f6e3df',
+        fontSize: deviceWidth/13,
+    },
+	titleContainer: {
+        width: deviceWidth,
+        height: deviceHeight/5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'blue',
+        borderBottomWidth: deviceWidth/50,
+        borderColor: '#f6e3df',
+    },
+    titleText: {
+        fontSize: deviceWidth/9,
+        fontFamily: 'Helvetica',
+        fontWeight: 'bold',
+        color: '#f6e3df',
+    },
+    descContainer: {
+        width: deviceWidth,
+        height: deviceHeight*2/5,
+        backgroundColor: '#151880',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderBottomWidth: deviceWidth/50,
+        borderColor: '#f6e3df',
+    },
+    descText: {
+        marginTop: deviceHeight/50,
+        fontSize: deviceWidth/13,
+        fontFamily: 'Helvetica',
+        color: '#f6e3df',
+        textAlign: 'center',
+    },
+    descText2: {
+        marginTop: deviceHeight/50,
+        fontSize: deviceWidth/23,
+        fontFamily: 'Helvetica',
+        color: '#f6e3df',
+        textAlign: 'center',
+    },
+    inputContainer: {
+        width: deviceWidth,
+        height: deviceHeight*2/5,
+        backgroundColor: '#4d4cff',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+    },
+    inputRow: {
+        width: deviceWidth,
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+    },
+    inputStyle: {
+        width: deviceWidth/2.25,
+        height: deviceHeight/8,
+        padding: 8,
+        backgroundColor: '#ffbf7a',
+        borderWidth: deviceWidth/50,
+        borderColor: '#151880',
+        borderRadius: deviceWidth/50,
+        fontFamily: 'Helvetica',
+        color: '#151880',
+        fontSize: deviceWidth/13,
+        fontWeight: 'bold'
+    },
+    scoreContainer: {
+        width: deviceWidth,
+        height: deviceHeight*1/5,
+        backgroundColor: '#151880',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        borderBottomWidth: deviceWidth/50,
+        borderColor: '#f6e3df',
+    },
+    individualScoreContainer: {
+        width: deviceWidth*1/2,
+        height: deviceHeight*1/5,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    scoreText: {
+        marginTop: deviceHeight/50,
+        fontSize: deviceWidth/12,
+        fontFamily: 'Helvetica',
+        color: 'gold',
+    },
+    pricePointContainer: {
+        width: deviceWidth,
+        height: deviceHeight*2/5,
+        backgroundColor: '#4d4cff',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+    },
+    buttonRowContainer: {
+        width: deviceWidth,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        backgroundColor: '#4d4cff',
+    },
+    priceButton: {
+        width: deviceWidth*5/12,
+        height: deviceHeight*1/8,
+        backgroundColor: '#ffbf7a',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: deviceWidth/50,
+        borderColor: '#151880',
+        borderRadius: deviceWidth/50,
+    },
+    buttonText: {
+        fontFamily: 'Helvetica',
+        textAlign: "center",
+        color: '#151880',
+        fontSize: deviceWidth/13,
+        fontWeight: 'bold'
+    },
+    questionContainer: {
+        width: deviceWidth,
+        height: deviceHeight*4/5,
+        backgroundColor: '#4d4cff',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+    },
+    question: {
+        fontSize: deviceWidth/13,
+        fontFamily: 'Helvetica',
+        color: '#f6e3df',
+        textAlign: 'center',
+    },
+    answer: {
+        fontFamily: 'Helvetica',
+        color: '#151880',
+        fontSize: deviceWidth/12,
+        fontWeight: 'bold'
+    },
+    answerButtonContainer: {
+        width: deviceWidth,
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+    },
+    shopButtonContainer: {
+        width: deviceWidth,
+        height: deviceHeight*3/5,
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+    },
+    continueContainer: {
+        width: deviceWidth,
+        height: deviceHeight*2/5,
+        backgroundColor: '#4d4cff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderBottomWidth: deviceWidth/50,
+        borderColor: '#f6e3df',
+    },
+    answerButton: {
+        width: deviceWidth*3/12,
+        height: deviceHeight*1/8,
+        backgroundColor: '#ffbf7a',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: deviceWidth/50,
+        borderColor: '#151880',
+        borderRadius: deviceWidth/50,
+    },
+    questionTextInput: {
+        width: deviceWidth*11/12,
+        height: deviceHeight*1/15,
+        backgroundColor: '#ffbf7a',
+        alignItems: 'center',
+        borderWidth: deviceWidth/75,
+        borderColor: '#151880',
+        borderRadius: deviceWidth/75,
+        fontFamily: 'Helvetica',
+        color: '#151880',
+        fontSize: deviceWidth/18,
+    },
+    customQuestionContainer: {
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        height: deviceHeight*3/5,
+    },
+    scoreContainer2: {
+        width: deviceWidth,
+        height: deviceHeight*1/5,
+        backgroundColor: '#151880',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        borderBottomWidth: deviceWidth/50,
+        borderColor: '#f6e3df',
+    },
+});
