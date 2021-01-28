@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 
 let deviceHeight = Dimensions.get('window').height;
 let deviceWidth = Dimensions.get('window').width;
-// Jack Pec, Zaid Ahmed, Misho, Daniel Ko
+// Made by Jack Pec, Zaid Ahmed, Misho, Daniel Ko
 export default class App extends Component {
 
 //////RENDER////////
